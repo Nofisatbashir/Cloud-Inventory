@@ -1,14 +1,14 @@
 import mysql.connector
 import yfinance as yf
 #1. Connect to your local MySQL server
-db = mysql.connector.connect(host="localhost", user="root", password="YOUR_ROOT_PASSWORD", database="inventory_db")
-cursor = db.cursor()
+db = mysql.connector.connect(host="localhost", user="root", password="Goodnews2006", database="inventory_db")
 def log_stock_price(ticker)
     #2. Get live data
+cursor = db.cursor()
     stock = yf.Ticker(ticker)
-    price =stock.fast_info['last_Price'] 
+    price =stock.fast_info['last_price'] 
         #3. Prepare the SQl command
-        sql = "INSERT INTO stock_tracking(ticker, date, price) VALUES (%s, %s, %s)"
+        sql = "INSERT INTO stock_tracking(ticker, price) VALUES (%s, %s)"
         val = (ticker, price)
         #4. Execute and save
         cursor.execute(sql, val)
