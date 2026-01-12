@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,url_for,redirect
+from flask import Flask, render_template, request, url_for, redirect
 import mysql.connector
 
 app = Flask(__name__)
@@ -123,6 +123,41 @@ def update_user():
     
     cur = con.cursor()
     cur.execute("UPDATE user SET email=%s, password=%s WHERE id=%s", (email, password, id))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/add_item', methods=['POST'])
+def add_item():
+    name = request.form.get('name')
+    quantity = request.form.get('quantity')
+    status = request.form.get('status')
+    
+    cur = con.cursor()
+    cur.execute("INSERT INTO items (name, quantity, status) VALUES (%s, %s, %s)", (name, quantity, status))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/add_order', methods=['POST'])
+def add_order():
+    item_id = request.form.get('item_id')
+    quantity = request.form.get('quantity')
+    status = request.form.get('status')
+    
+    cur = con.cursor()
+    cur.execute("INSERT INTO orders (item_id, quantity, status) VALUES (%s, %s, %s)", (item_id, quantity, status))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    email = request.form.get('email')
+    password = hash(request.form.get('password'))
+    
+    cur = con.cursor()
+    cur.execute("INSERT INTO user (email, password) VALUES (%s, %s)", (email, password))
     con.commit()
 
     return redirect(url_for('manage'))
