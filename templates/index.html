@@ -17,7 +17,7 @@
     </a>
     <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
         <a href = "/" class="mr-5 text-gray-900">Home</a>
-        <a href = "/update" class="mr-5 hover:text-gray-900">Manage Inventory</a>
+        <a href = "/manage" class="mr-5 hover:text-gray-900">Manage Inventory</a>
         <a href = "/login" class="mr-5 hover:text-gray-900">Login</a>
     </nav>
 </header>
@@ -60,7 +60,6 @@
       </div>
       <div class="p-2 lg:w-1/3 md:w-1/2 w-full">
         <div class="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-<!--          <img alt="team" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src="https://dummyimage.com/94x94">-->
           <div class="flex-grow">
             <h2 class="text-gray-900 title-font font-medium">Order Pending</h2>
             <p class="text-gray-500">{{ orders.get('In Progress', 0) }}</p>
@@ -69,7 +68,6 @@
       </div>
       <div class="p-2 lg:w-1/3 md:w-1/2 w-full">
         <div class="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-<!--          <img alt="team" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src="https://dummyimage.com/98x98">-->
           <div class="flex-grow">
             <h2 class="text-gray-900 title-font font-medium">Complete Orders</h2>
             <p class="text-gray-500">{{ orders.get('Completed', 0) }}</p>
@@ -79,7 +77,6 @@
 
       <div class="p-2 lg:w-1/3 md:w-1/2 w-full">
         <div class="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-<!--          <img alt="team" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src="https://dummyimage.com/104x94">-->
           <div class="flex-grow">
             <h2 class="text-gray-900 title-font font-medium">Items in production</h2>
             <p class="text-gray-500">{{ items_in_production }}</p>
@@ -88,7 +85,6 @@
       </div>
       <div class="p-2 lg:w-1/3 md:w-1/2 w-full">
         <div class="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-<!--          <img alt="team" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4" src="https://dummyimage.com/108x98">-->
           <div class="flex-grow">
             <h2 class="text-gray-900 title-font font-medium">Items Ready to ship</h2>
             <p class="text-gray-500">{{ items_ready }}</p>

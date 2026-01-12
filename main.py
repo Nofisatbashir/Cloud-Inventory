@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,url_for
+from flask import Flask, render_template,request,url_for,redirect
 import mysql.connector
 
 app = Flask(__name__)
@@ -41,74 +41,91 @@ def home():
         items_in_production=items_in_production,
         items_ready=items_ready)
 
-# @app.route('/update')
-# def update():
-
-#     cur.execute("SELECT * FROM data")
-#     data = cur.fetchall()
-
-#     return render_template('update.html', units = data[-1])
-
-@app.route('/update')
-def update_page():
-    # We need to fetch items here too, so the dropdown menu works!
+@app.route('/manage')
+def manage():
     cur = con.cursor(dictionary=True)
+
+    # 1. Fetch Items
     cur.execute("SELECT * FROM items")
     items = cur.fetchall()
-    con.close()
-    
-    return render_template('update.html', items=items)
 
-@app.route('/login')
-def login():
+    # 2. Fetch Orders (Joined with Item Name for display)
+    cur.execute("""
+        SELECT orders.id, orders.quantity, orders.status, items.name as item_name 
+        FROM orders 
+        LEFT JOIN items ON orders.item_id = items.id
+    """)
+    orders = cur.fetchall()
 
-    return render_template('login.html')
+    # 3. Fetch Users
+    cur.execute("SELECT * FROM user")
+    users = cur.fetchall()
 
-@app.route('/fetch',methods = ['POST'])
-def fetch():
-    book1 = request.form.get('book1')
-    book2 = request.form.get('book2')
-    book3 = request.form.get('book3')
-    oders = request.form.get('oders')
-    pending = request.form.get('pending')
-    complete = request.form.get('complete')
-    print = request.form.get('print')
-    production = request.form.get('production')
-    ready = request.form.get('ready')
+    return render_template('manage.html', items=items, orders=orders, users=users)
 
-
-    cur.execute("""INSERT INTO `data` (`book1`, `book2`, `book3`, `oders`, `oder pending`, `complete oders`, `books in printing`, `books in production`, `books ready`) VALUES ({}, {},{},{},{},{},{},{},{});""".format(book1,book2,book3,oders,pending,complete,print,production,ready))
-    con.commit()
-    cur.execute("SELECT * FROM data")
-    data = cur.fetchall()
-
-    return render_template('index.html', units = data[-1])
-
-@app.route('/validation',methods = ['POST'])
-def val():
-    email = request.form.get('email')
-    passw = request.form.get('password')
-
-    cur.execute("SELECT * FROM data")
-    data = cur.fetchall()
-
+@app.route('/delete_item/<int:id>')
+def delete_item(id):
+    cur = con.cursor()
     try:
-        cur.execute("""INSERT INTO `user` (`user id`,`email`,`password`) VALUES (NULL,{},{});""".format(email,passw))
+        cur.execute("DELETE FROM items WHERE id = %s", (id,))
         con.commit()
-    except:
-        return render_template('update.html', units = data[-1])
+    except mysql.connector.Error as err:
+        print("Error: ", err) # Handle foreign key constraints if needed
 
-    return render_template('update.html', units = data[-1])
+    return redirect(url_for('manage'))
 
-@app.route('/add_user', methods=['POST'])
-def add_user():
-    name = request.form['name']
-    email = request.form['email']
-    sql = "INSERT INTO users (name, email) VALUES (%s, %s)"
-    val = (name, email)
-    cursor.execute(sql, val)
-    db.commit()
-    return "User added successfully!"
+@app.route('/delete_order/<int:id>')
+def delete_order(id):
+    cur = con.cursor()
+    cur.execute("DELETE FROM orders WHERE id = %s", (id,))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/delete_user/<int:id>')
+def delete_user(id):
+    cur = con.cursor()
+    cur.execute("DELETE FROM user WHERE id = %s", (id,))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/update_item', methods=['POST'])
+def update_item():
+    id = request.form.get('id')
+    name = request.form.get('name')
+    quantity = request.form.get('quantity')
+    status = request.form.get('status')
+    
+    cur = con.cursor()
+    cur.execute("UPDATE items SET name=%s, quantity=%s, status=%s WHERE id=%s", (name, quantity, status, id))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/update_order', methods=['POST'])
+def update_order():
+    id = request.form.get('id')
+    quantity = request.form.get('quantity')
+    status = request.form.get('status')
+    
+    cur = con.cursor()
+    cur.execute("UPDATE orders SET quantity=%s, status=%s WHERE id=%s", (quantity, status, id))
+    con.commit()
+
+    return redirect(url_for('manage'))
+
+@app.route('/update_user', methods=['POST'])
+def update_user():
+    id = request.form.get('id')
+    email = request.form.get('email')
+    password = request.form.get('password') # In production, hash this!
+    
+    cur = con.cursor()
+    cur.execute("UPDATE user SET email=%s, password=%s WHERE id=%s", (email, password, id))
+    con.commit()
+
+    return redirect(url_for('manage'))
 
 if __name__=='__main__':
     app.run(debug = True)
