@@ -3,11 +3,11 @@ import mysql.connector
 
 app = Flask(__name__)
 
-con = mysql.connector.connect(host='localhost', user='root', password='', database='inventory')
-cur = con.cursor()
+con = mysql.connector.connect(host='localhost', user='root', password='Goodnews2006', database='inventorycap_db')
 
 
 @app.route('/')
+cur = con.cursor()
 def home():
     cur.execute("SELECT * FROM data")
     data = cur.fetchall()
