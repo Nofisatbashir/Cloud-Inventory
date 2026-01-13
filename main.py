@@ -3,12 +3,12 @@ import mysql.connector
 
 app = Flask(__name__)
 
-# con = mysql.connector.connect(host='localhost', user='root', password='', database='inventory')
+# con = mysql.connector.connect(host='localhost', user='root', password='oyeendamola2', database='inventory_db')
 con = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
-    password="password",  
-    database="sample"     
+    password="oyeendamola2",  
+    database="inventory_db"     
 )
 cur = con.cursor()
 
