@@ -11,8 +11,11 @@ con = mysql.connector.connect(
     database="inventory_db"     
 )
 cur = con.cursor()
+con = mysql.connector.connect(host='localhost', user='root', password='Goodnews2006', database='inventorycap_db')
+
 
 @app.route('/')
+cur = con.cursor()
 def home():
     cur = con.cursor(dictionary=True)
 
